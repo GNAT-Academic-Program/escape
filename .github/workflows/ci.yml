@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [embedded, desktop]
+    env:
+      TARGET: ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: alire-project/setup-alire@v4
+      - name: Build library
+        run: alr -n build
+      - name: Tests (${{ matrix.target }} backing)
+        run: |
+          cd tests
+          alr -n build
+          ./bin/$TARGET/tests | tee trace-$TARGET.txt
+      - name: Stress demo
+        run: |
+          cd demo
+          alr -n build
+          ./bin/$TARGET/stress
+      - uses: actions/upload-artifact@v4
+        with:
+          name: trace-${{ matrix.target }}
+          path: tests/trace-${{ matrix.target }}.txt
+
+  differential:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+      - name: Traces identical across backings (except the banner line)
+        run: |
+          diff <(tail -n +2 trace-embedded/trace-embedded.txt) \
+               <(tail -n +2 trace-desktop/trace-desktop.txt)
+
+  prove:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: alire-project/setup-alire@v4
+      - name: SPARK flow analysis on the leaf packages
+        run: |
+          alr -n with gnatprove
+          alr -n exec -- gnatprove -P escape.gpr --mode=flow --checks-as-errors=on

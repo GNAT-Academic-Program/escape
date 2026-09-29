@@ -1,0 +1,11 @@
+name = "escape"
+description = "Bounded entity-component-system runtime with swappable storage backings"
+version = "0.1.0-dev"
+authors = ["Olivier Henley"]
+maintainers = ["Olivier Henley <henley@adacore.com>"]
+maintainers-logins = ["ohenley"]
+licenses = "Apache-2.0"
+website = "https://github.com/GNAT-Academic-Program/escape"
+tags = ["ecs", "game", "embedded", "spark", "gap"]
+
+project-files = ["escape.gpr"]

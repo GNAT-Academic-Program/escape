@@ -1,0 +1,16 @@
+name = "escape_tests"
+description = "escape acceptance tests, both backings"
+executables = ["tests"]
+version = "0.1.0-dev"
+authors = ["Olivier Henley"]
+maintainers = ["Olivier Henley <henley@adacore.com>"]
+maintainers-logins = ["ohenley"]
+licenses = "Apache-2.0"
+
+project-files = ["tests.gpr"]
+
+[[depends-on]]
+escape = "*"
+
+[[pins]]
+escape = { path = ".." }

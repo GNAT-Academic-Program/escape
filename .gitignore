@@ -1,0 +1,9 @@
+obj/
+lib/
+bin/
+alire/
+config/
+*.o
+*.ali
+gnatprove/
+tests/trace-*.txt

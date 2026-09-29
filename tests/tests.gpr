@@ -1,0 +1,21 @@
+with "escape";
+
+project Tests is
+   type Target_Kind is ("embedded", "desktop");
+   Target : Target_Kind := external ("TARGET", "desktop");
+   --  Which Game_ECS assembly: bounded+flat or unbounded+paged. The
+   --  main program is byte-identical; its trace must be too.
+
+   for Source_Dirs use ("src", "../demo/src", "../demo/src/" & Target);
+   for Object_Dir use "obj/" & Target;
+   for Exec_Dir use "bin/" & Target;
+   for Create_Missing_Dirs use "True";
+   for Main use ("tests.adb");
+   package Compiler is
+      for Default_Switches ("Ada") use
+        ("-gnat2022", "-gnata", "-gnatwa", "-gnatwe", "-gnatVa", "-gnatyg", "-gnatyM100", "-g", "-O2");
+   end Compiler;
+   package Binder is
+      for Switches ("Ada") use ("-Es");
+   end Binder;
+end Tests;
